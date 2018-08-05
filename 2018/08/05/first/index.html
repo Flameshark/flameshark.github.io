@@ -108,21 +108,25 @@
 
 
 
-  <meta name="keywords" content="Unity C# 游戏">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Flameshark">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="最近经常被问到C#的GC原理，发现自己知之甚少。偶然发现在《CLR via C#》一书中有非常详细的解释，特此做一些整理和记录。 对象的生存周期常用引用计数来管理，例如Mircosoft自己的COM，但是引用计数的一个明显问题就是没有办法解决循环引用 C#使用一种叫引用跟踪算法。引用跟踪算法只关心引用类型的变量，因为只有它能够引用堆上的对象，我们将所有引用类型的变量称为根 CLR的GC是基于代的垃">
+<meta name="keywords" content="C# GC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# 底层GC原理和机制">
+<meta property="og:url" content="http://yoursite.com/2018/08/05/first/index.html">
 <meta property="og:site_name" content="Flameshark">
+<meta property="og:description" content="最近经常被问到C#的GC原理，发现自己知之甚少。偶然发现在《CLR via C#》一书中有非常详细的解释，特此做一些整理和记录。 对象的生存周期常用引用计数来管理，例如Mircosoft自己的COM，但是引用计数的一个明显问题就是没有办法解决循环引用 C#使用一种叫引用跟踪算法。引用跟踪算法只关心引用类型的变量，因为只有它能够引用堆上的对象，我们将所有引用类型的变量称为根 CLR的GC是基于代的垃">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-05T09:26:33.352Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Flameshark">
+<meta name="twitter:title" content="C# 底层GC原理和机制">
+<meta name="twitter:description" content="最近经常被问到C#的GC原理，发现自己知之甚少。偶然发现在《CLR via C#》一书中有非常详细的解释，特此做一些整理和记录。 对象的生存周期常用引用计数来管理，例如Mircosoft自己的COM，但是引用计数的一个明显问题就是没有办法解决循环引用 C#使用一种叫引用跟踪算法。引用跟踪算法只关心引用类型的变量，因为只有它能够引用堆上的对象，我们将所有引用类型的变量称为根 CLR的GC是基于代的垃">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/08/05/first/"/>
 
 
 
@@ -132,7 +136,7 @@
   };
 </script>
 
-  <title>Flameshark</title>
+  <title>C# 底层GC原理和机制 | Flameshark</title>
   
 
 
@@ -179,8 +183,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -217,7 +220,7 @@
         
         
           
-          <li class="menu-item menu-item-home menu-item-active">
+          <li class="menu-item menu-item-home">
     <a href="/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
   </li>
@@ -285,9 +288,9 @@
           
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -319,11 +322,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/05/first/" itemprop="url">
-                  C# 底层GC原理和机制
-                </a>
+          <h1 class="post-title" itemprop="name headline">C# 底层GC原理和机制
               
             
           </h1>
@@ -386,9 +385,7 @@
       
 
       
-        
-          
-            <p>最近经常被问到C#的GC原理，发现自己知之甚少。偶然发现在《CLR via C#》一书中有非常详细的解释，特此做一些整理和记录。</p>
+        <p>最近经常被问到C#的GC原理，发现自己知之甚少。偶然发现在《CLR via C#》一书中有非常详细的解释，特此做一些整理和记录。</p>
 <p>对象的生存周期常用<strong>引用计数</strong>来管理，例如Mircosoft自己的COM，但是引用计数的一个明显问题就是没有办法解决循环引用<br></p>
 <p>C#使用一种叫<strong>引用跟踪算法</strong>。引用跟踪算法只关心引用类型的变量，因为只有它能够引用堆上的对象，我们将所有引用类型的变量称为<strong>根</strong></p>
 <p>CLR的GC是<strong>基于代的垃圾回收器</strong>(Generational Garbage Collector)，这个垃圾回器基于以下3点假设:<br></p>
@@ -398,8 +395,6 @@
 <li><strong>回收堆的一部分，速度快于回收整个堆</strong><br></li>
 </ol>
 
-          
-        
       
     </div>
 
@@ -417,14 +412,20 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/C-GC/" rel="tag"># C# GC</a>
+          
+        </div>
+      
+
+      
+      
+      
 
       
 
       
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -434,14 +435,15 @@
   </article>
 
 
-    
-  </section>
-
-  
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -664,6 +666,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
 
   
 
