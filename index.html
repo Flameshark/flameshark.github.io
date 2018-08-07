@@ -332,7 +332,7 @@
                 
               
 
-              <time title="创建时间：2018-08-07 22:47:23 / 修改时间：22:48:09" itemprop="dateCreated datePublished" datetime="2018-08-07T22:47:23+08:00">2018-08-07</time>
+              <time title="创建时间：2018-08-07 22:47:23 / 修改时间：23:06:05" itemprop="dateCreated datePublished" datetime="2018-08-07T22:47:23+08:00">2018-08-07</time>
             
 
             
@@ -372,7 +372,30 @@
       
         
           
-            
+            <p><strong>一、渲染模块</strong></p>
+<ol>
+<li>降低DrawCall 通常GPU渲染很块，但CPU准备渲染数据、切换渲染状态更耗时。<br></li>
+<li>简化资源 降低每帧渲染的三角形面片数。</li>
+</ol>
+<p><strong>二、UI模块</strong></p>
+<ol>
+<li>NGUI中注意UIPanel.LateUpdate的优化。</li>
+</ol>
+<ul>
+<li>将动态元素和静态元素分离到不同的Panel中。</li>
+<li>让UI元素执照同步性进行划分。</li>
+<li>控制一个UIPanel中的元素数量，当子元素过多时，每次重构时Mesh生成的消耗巨大。</li>
+</ul>
+<p><strong>三、加载模块</strong></p>
+<ol>
+<li>场景卸载时的GameObjet的OnDestory回调，开销取决于该函数中的代码逻辑</li>
+<li>Resources.UnloadUnusedAssets 该函数在切换场景时Unity内部会自动调用一次。由于需要遍历查找所有对象，找到不活动的对象开销巨大。一般程序内不主动调用。</li>
+<li>资源加载，每帧控制同时加载的对象数量。</li>
+<li>Instantiate实例化，在实例化之前化检查引用的资源是否加载和实例化，还有对对象脚本的初始化，以及初始Transform的计算，会比较耗时。建议控制每帧实例的数量。</li>
+</ol>
+<p><strong>四、代码逻辑</strong></p>
+<p>这部分可以结合Profiler来查找CPU耗时比较高的函数，进行排查和优化。</p>
+
           
         
       
