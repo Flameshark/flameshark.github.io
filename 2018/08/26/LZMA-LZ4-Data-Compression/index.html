@@ -108,25 +108,28 @@
 
 
 
-  <meta name="description" content="一、渲染模块  降低DrawCall 通常GPU渲染很块，但CPU准备渲染数据、切换渲染状态更耗时。 简化资源 降低每帧渲染的三角形面片数。  二、UI模块  NGUI中注意UIPanel.LateUpdate的优化。   将动态元素和静态元素分离到不同的Panel中。 让UI元素执照同步性进行划分。 控制一个UIPanel中的元素数量，当子元素过多时，每次重构时Mesh生成的消耗巨大。  三、加">
-<meta name="keywords" content="Unity 优化 CPU">
+  <meta name="description" content="LZ77与LZ78是Abraham Lempel与Jacob Ziv在1977年以及1978年发表的论文中的两个无损数据压缩算法。这两个算法是大多数LZ算法变体如LZW、LZSS以及其它一些压缩算法的基础。与最小冗余编码器或者进程长度编码器不同，这两个都是基于字典的编码器。LZ77是“滑动窗”压缩算法，这个算法后来被证明等同于LZ78中首次出现的显式字典编码技术。 LZ77算法针对过去的数据进行处">
+<meta name="keywords" content="LZMA LZ4 数据压缩 Data Compression">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Unity CPU性能优化">
-<meta property="og:url" content="http://yoursite.com/2018/08/07/Unity-Optimize/index.html">
+<meta property="og:title" content="LZMA和LZ4相关压缩原理">
+<meta property="og:url" content="http://yoursite.com/2018/08/26/LZMA-LZ4-Data-Compression/index.html">
 <meta property="og:site_name" content="Flameshark">
-<meta property="og:description" content="一、渲染模块  降低DrawCall 通常GPU渲染很块，但CPU准备渲染数据、切换渲染状态更耗时。 简化资源 降低每帧渲染的三角形面片数。  二、UI模块  NGUI中注意UIPanel.LateUpdate的优化。   将动态元素和静态元素分离到不同的Panel中。 让UI元素执照同步性进行划分。 控制一个UIPanel中的元素数量，当子元素过多时，每次重构时Mesh生成的消耗巨大。  三、加">
+<meta property="og:description" content="LZ77与LZ78是Abraham Lempel与Jacob Ziv在1977年以及1978年发表的论文中的两个无损数据压缩算法。这两个算法是大多数LZ算法变体如LZW、LZSS以及其它一些压缩算法的基础。与最小冗余编码器或者进程长度编码器不同，这两个都是基于字典的编码器。LZ77是“滑动窗”压缩算法，这个算法后来被证明等同于LZ78中首次出现的显式字典编码技术。 LZ77算法针对过去的数据进行处">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-07T15:06:05.387Z">
+<meta property="og:image" content="http://yoursite.com/2018/08/26/LZMA-LZ4-Data-Compression/encoding.png">
+<meta property="og:image" content="http://yoursite.com/2018/08/26/LZMA-LZ4-Data-Compression/dencoding.png">
+<meta property="og:updated_time" content="2018-08-26T14:47:58.382Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Unity CPU性能优化">
-<meta name="twitter:description" content="一、渲染模块  降低DrawCall 通常GPU渲染很块，但CPU准备渲染数据、切换渲染状态更耗时。 简化资源 降低每帧渲染的三角形面片数。  二、UI模块  NGUI中注意UIPanel.LateUpdate的优化。   将动态元素和静态元素分离到不同的Panel中。 让UI元素执照同步性进行划分。 控制一个UIPanel中的元素数量，当子元素过多时，每次重构时Mesh生成的消耗巨大。  三、加">
+<meta name="twitter:title" content="LZMA和LZ4相关压缩原理">
+<meta name="twitter:description" content="LZ77与LZ78是Abraham Lempel与Jacob Ziv在1977年以及1978年发表的论文中的两个无损数据压缩算法。这两个算法是大多数LZ算法变体如LZW、LZSS以及其它一些压缩算法的基础。与最小冗余编码器或者进程长度编码器不同，这两个都是基于字典的编码器。LZ77是“滑动窗”压缩算法，这个算法后来被证明等同于LZ78中首次出现的显式字典编码技术。 LZ77算法针对过去的数据进行处">
+<meta name="twitter:image" content="http://yoursite.com/2018/08/26/LZMA-LZ4-Data-Compression/encoding.png">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/08/07/Unity-Optimize/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/08/26/LZMA-LZ4-Data-Compression/"/>
 
 
 
@@ -136,7 +139,7 @@
   };
 </script>
 
-  <title>Unity CPU性能优化 | Flameshark</title>
+  <title>LZMA和LZ4相关压缩原理 | Flameshark</title>
   
 
 
@@ -289,7 +292,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/07/Unity-Optimize/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/26/LZMA-LZ4-Data-Compression/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Flameshark">
@@ -306,7 +309,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Unity CPU性能优化
+          <h1 class="post-title" itemprop="name headline">LZMA和LZ4相关压缩原理
               
             
           </h1>
@@ -331,7 +334,7 @@
                 
               
 
-              <time title="创建时间：2018-08-07 22:47:23 / 修改时间：23:06:05" itemprop="dateCreated datePublished" datetime="2018-08-07T22:47:23+08:00">2018-08-07</time>
+              <time title="创建时间：2018-08-26 21:46:04 / 修改时间：22:47:58" itemprop="dateCreated datePublished" datetime="2018-08-26T21:46:04+08:00">2018-08-26</time>
             
 
             
@@ -369,29 +372,33 @@
       
 
       
-        <p><strong>一、渲染模块</strong></p>
+        <p><strong>LZ77</strong>与<strong>LZ78</strong>是Abraham Lempel与Jacob Ziv在1977年以及1978年发表的论文中的两个<strong>无损数据压缩算法</strong>。这两个算法是大多数LZ算法变体如LZW、LZSS以及其它一些压缩算法的基础。与最小冗余编码器或者进程长度编码器不同，这两个都是基于字典的编码器。LZ77是“滑动窗”压缩算法，这个算法后来被证明等同于LZ78中首次出现的显式字典编码技术。<br></p>
+<p>LZ77算法针对过去的数据进行处理，而LZ78算法却是针对后来的数据进行处理。LZ78通过对输入缓存数据进行预先扫描与它维护的字典中的数据进行匹配来实现这个功能，在找到字典中不能匹配的数据之前它扫描进所有的数据，这时它将输出数据在字典中的位置、匹配的长度以及找不到匹配的数据，并且将结果数据添加到字典中。</p>
+<p>尽管在最初得到流行，但是后来LZ78的普及逐渐衰减，这可能是由于在刚LZ78出现的一些年份，一部分LZ78算法获得了美国专利保护。最流行的LZ78压缩形式是<strong>LZW算法</strong>，这个算法是Terry Welch所开发的一个LZ78变体。<br></p>
+<p><strong>LZMA</strong>（Lempel-Ziv-Markov chain-Algorithm的缩写）是2001年以来得到发展的一个数据压缩算法，它用于7-Zip归档工具中的7z格式和 Unix-like 下的 xz 格式。它使用类似于LZ77的字典编码机制，在一般的情况下压缩率比bzip2为高，用于压缩的字典文件大小可达4GB。</p>
+<p>C++语言写成的LZMA开放源码压缩库使用了区间编码支持的LZ77改进压缩算法以及特殊的用于二进制的预处理程序。LZMA 对数据流、重复序列大小以及重续序列位置单独进行了压缩。LZMA支持几种散列链变体、二叉树以及基数树作为它的字典查找算法基础。<br></p>
+<p><strong>LZ4</strong>是一种无损数据压缩算法，着重于压缩和解压缩速度。它属于面向字节的LZ77压缩方案家族。</p>
+<p>LZ77压缩算法通过<strong>“滑动窗口”</strong>来实现数据压缩。滑动窗口由<strong>搜索缓冲区（Search Buffer）</strong>和<strong>前向查找缓冲区（Look ahead Buffer)</strong>组成。通过对字体串的滑动搜索压缩输出一系列&lt;x,y,z&gt;三元组，其中x代表数据在前面的偏移，y代表匹配的字符串长度，z代表下一个字符串。以字符串“abracadabrarray”的压缩过程为例：<br><br><img src="/2018/08/26/LZMA-LZ4-Data-Compression/encoding.png" alt="压缩过程"></p>
 <ol>
-<li>降低DrawCall 通常GPU渲染很块，但CPU准备渲染数据、切换渲染状态更耗时。<br></li>
-<li>简化资源 降低每帧渲染的三角形面片数。</li>
+<li>搜索缓冲区大小设为8，初始化为空。前向查找缓冲区大小设为6，初始化为abraca。<br></li>
+<li>对于当前的前向查找缓冲区第一个字符a，向前查找是否有匹配的a，由于搜索缓冲区此时为空所以没有匹配，因此输出&lt;0,0,a&gt;，窗口向前移动一位，搜索缓冲区变为a，前向查找缓冲区变为bracad。<br></li>
+<li>对于当前的前向查找缓冲区第一个字符b，与前面的字符a类似，输出&lt;0,0,b&gt;，意为没有匹配、长度为0，下一个字符为b<br>，窗口向前移动一位，搜索缓冲区变为ab，前向查找缓冲区变为racada。<br></li>
+<li>对于当前的前向查找缓冲区第一个字符r，与前面的字符b类似，输出&lt;0,0,r&gt;，意为没有匹配、长度为0，下一个字符为b<br>，窗口向前移动一位，搜索缓冲区变为abr，前向查找缓冲区变为acadab。<br></li>
+<li>对于当前的前向查找缓冲区第一个字符a，我们终于在搜索缓冲区里能找到一个匹配了，这个a和它的相对距离是3，并且最长匹配长度为1（abr和acadab匹配），此时下一个字符为c。所以最后的输出是&lt;3,1,c&gt;。窗口向前移动到字符c为止，搜索缓冲区变abrac，前向查找缓冲区变为adabra。<br></li>
+<li>对于当前的前向查找缓冲区第一个字符a，和上一条类似，最后输出&lt;2,1,d&gt;。窗口向前移动到字符d为止，搜索缓冲区变abracad，前向查找缓冲区变为abrarr。<br></li>
+<li>此时前向查找缓冲区第一个字符a在前面的搜索缓冲区中有两个a可以匹配，分别是偏移3位置和偏移7位置，但偏移3位置只能匹配一个字符a，而偏移7位置可以匹配长度为4的字符串abra。所以按最估策略，此时的输出是&lt;7,4,r&gt;。窗口向前移动到字符r为止，搜索缓冲区变cadabrar，前向查找缓冲区变为ray。<br></li>
+<li>同第5条类似，最后输出&lt;3,2,y&gt;。<br><br><br>至此，我们完成了LZ77算法的压缩过程。可以看出，在窗口滑动过程中，通过向前在搜索缓冲区中查找相同的模式，实现了数据的压缩。这样的算法非常高效，但是在解压时必须是按顺序解压，前面的数据如果还没有还原，那么后续的数据也没有办法解压缩。<br><br><img src="/2018/08/26/LZMA-LZ4-Data-Compression/dencoding.png" alt="解压过程"></li>
 </ol>
-<p><strong>二、UI模块</strong></p>
+<p>LZ77的解压缩过程相对更简单。还是以上面的字符串为例：<br></p>
 <ol>
-<li>NGUI中注意UIPanel.LateUpdate的优化。</li>
+<li>&lt;0,0,a&gt; 直接输出a，当前解压结果为a。<br></li>
+<li>&lt;0,0,b&gt; 直接输出b，当前解压结果为ab。<br></li>
+<li>&lt;0,0,r&gt; 直接输出r, 当前解压结果为abr。<br></li>
+<li>&lt;3,1,c&gt; 意为对当前结果abc,向前偏移3位开始，有一个长度为1的匹配，并且之后的字符为c，所有最后解压结果为abr + a + c = abrac。<br></li>
+<li>&lt;2,1,d&gt; 意为对当前结果abrac,向前偏移2位开始，有一个长度为1的匹配，并且之后的字符为d，所有最后解压结果为abrac + a + d = abracad。<br></li>
+<li>&lt;7,4,r&gt; 意为对当前结果abracad,向前偏移7位开始，有一个长度为4的匹配，并且之后的字符为r，所有最后解压结果为abracad + abra + r = abracadabrar。<br></li>
+<li>&lt;3,2,y&gt; 意为对当前结果abracadabrar,向前偏移3位开始，有一个长度为2的匹配，并且之后的字符为d，所有最后解压结果为abracadabrar + ra + y = abracadabrarray。<br></li>
 </ol>
-<ul>
-<li>将动态元素和静态元素分离到不同的Panel中。</li>
-<li>让UI元素执照同步性进行划分。</li>
-<li>控制一个UIPanel中的元素数量，当子元素过多时，每次重构时Mesh生成的消耗巨大。</li>
-</ul>
-<p><strong>三、加载模块</strong></p>
-<ol>
-<li>场景卸载时的GameObjet的OnDestory回调，开销取决于该函数中的代码逻辑</li>
-<li>Resources.UnloadUnusedAssets 该函数在切换场景时Unity内部会自动调用一次。由于需要遍历查找所有对象，找到不活动的对象开销巨大。一般程序内不主动调用。</li>
-<li>资源加载，每帧控制同时加载的对象数量。</li>
-<li>Instantiate实例化，在实例化之前化检查引用的资源是否加载和实例化，还有对对象脚本的初始化，以及初始Transform的计算，会比较耗时。建议控制每帧实例的数量。</li>
-</ol>
-<p><strong>四、代码逻辑</strong></p>
-<p>这部分可以结合Profiler来查找CPU耗时比较高的函数，进行排查和优化。</p>
 
       
     </div>
@@ -412,7 +419,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Unity-优化-CPU/" rel="tag"># Unity 优化 CPU</a>
+            <a href="/tags/LZMA-LZ4-数据压缩-Data-Compression/" rel="tag"># LZMA LZ4 数据压缩 Data Compression</a>
           
         </div>
       
@@ -425,8 +432,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/08/05/first/" rel="next" title="C# 底层GC原理和机制">
-                <i class="fa fa-chevron-left"></i> C# 底层GC原理和机制
+              <a href="/2018/08/07/Unity-Optimize-Memory/" rel="next" title="Unity 内存优化">
+                <i class="fa fa-chevron-left"></i> Unity 内存优化
               </a>
             
           </div>
@@ -434,10 +441,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/08/07/Unity-Optimize-Memory/" rel="prev" title="Unity 内存优化">
-                Unity 内存优化 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
